@@ -1,0 +1,90 @@
+[
+  {
+    "title": "President",
+    "candidates": [
+      "Amara Okonjo",
+      "Daniel Mensah",
+      "Leila Haddad"
+    ]
+  },
+  {
+    "title": "Vice President",
+    "candidates": [
+      "Chidi Okafor",
+      "Nia Williams",
+      "Kwame Boateng"
+    ]
+  },
+  {
+    "title": "General Secretary",
+    "candidates": [
+      "Aisha Bello",
+      "Peter Nwosu",
+      "Maya Patel"
+    ]
+  },
+  {
+    "title": "Assistant General Secretary",
+    "candidates": [
+      "Samuel Adeyemi",
+      "Zara Ibrahim",
+      "Emeka Eze"
+    ]
+  },
+  {
+    "title": "Treasurer",
+    "candidates": [
+      "Grace Osei",
+      "Noah Clarke",
+      "Fatima Yusuf"
+    ]
+  },
+  {
+    "title": "Financial Secretary",
+    "candidates": [
+      "David Kimani",
+      "Ruth Mensah",
+      "Ibrahim Sule"
+    ]
+  },
+  {
+    "title": "Organising Secretary",
+    "candidates": [
+      "Tomi Adebayo",
+      "Ella Thompson",
+      "Yusuf Ali"
+    ]
+  },
+  {
+    "title": "Public Relations Officer",
+    "candidates": [
+      "Miriam Kone",
+      "Ben Okoro",
+      "Sofia Rahman"
+    ]
+  },
+  {
+    "title": "Welfare Secretary",
+    "candidates": [
+      "Joyce Abena",
+      "Michael Dube",
+      "Hana Sato"
+    ]
+  },
+  {
+    "title": "Internal Auditor",
+    "candidates": [
+      "Omar Farouk",
+      "Priya Shah",
+      "Alex Morgan"
+    ]
+  },
+  {
+    "title": "Projects and Development Coordinator",
+    "candidates": [
+      "Esi Owusu",
+      "Jonah Peters",
+      "Lina Hassan"
+    ]
+  }
+]

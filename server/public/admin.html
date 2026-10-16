@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Election admin (demo)</title>
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --card: #fff;
+        --ink: #14213d;
+        --soft: #55607a;
+        --line: #dde1e8;
+        --accent: #1f4aa8;
+        --ok: #1b7a4b;
+        --bad: #b3261e;
+        color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1220;
+          --card: #151c2e;
+          --ink: #e8ecf5;
+          --soft: #9aa6bf;
+          --line: #27314a;
+          --accent: #7aa2ff;
+          --ok: #4cc38a;
+          --bad: #ff8a80;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          15px/1.5 system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+      }
+      main {
+        max-width: 1020px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 4rem;
+      }
+      h1 {
+        font-size: 1.4rem;
+        margin: 0 0 0.2rem;
+      }
+      h2 {
+        font-size: 1.05rem;
+        margin: 0 0 0.7rem;
+      }
+      h3 {
+        font-size: 0.95rem;
+        margin: 1rem 0 0.3rem;
+      }
+      .sub {
+        color: var(--soft);
+        margin: 0 0 1rem;
+      }
+      .grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 1rem 1.1rem;
+        margin-bottom: 1rem;
+      }
+      .stat b {
+        display: block;
+        font-size: 1.7rem;
+        line-height: 1.1;
+      }
+      .stat span {
+        color: var(--soft);
+        font-size: 0.85rem;
+      }
+      button {
+        font: inherit;
+        border: 1px solid var(--line);
+        background: var(--card);
+        color: var(--ink);
+        padding: 0.4rem 0.75rem;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      button.primary {
+        background: var(--accent);
+        color: #fff;
+        border-color: transparent;
+      }
+      button.danger {
+        color: var(--bad);
+      }
+      button.sm {
+        padding: 0.15rem 0.5rem;
+        font-size: 0.85rem;
+      }
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      textarea:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      input,
+      select,
+      textarea {
+        font: inherit;
+        padding: 0.4rem 0.6rem;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--ink);
+      }
+      textarea {
+        width: 100%;
+        min-height: 90px;
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.88rem;
+      }
+      .row {
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.92rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.4rem 0.5rem;
+        border-bottom: 1px solid var(--line);
+        vertical-align: middle;
+      }
+      th {
+        color: var(--soft);
+        font-weight: 600;
+      }
+      code {
+        font:
+          600 0.95rem ui-monospace,
+          Menlo,
+          Consolas,
+          monospace;
+        letter-spacing: 0.04em;
+      }
+      .pill {
+        display: inline-block;
+        padding: 0.05rem 0.55rem;
+        border-radius: 99px;
+        font-size: 0.78rem;
+        border: 1px solid var(--line);
+      }
+      .ok {
+        color: var(--ok);
+      }
+      .bad {
+        color: var(--bad);
+      }
+      .bar {
+        height: 8px;
+        border-radius: 4px;
+        background: var(--line);
+        overflow: hidden;
+        min-width: 80px;
+      }
+      .bar i {
+        display: block;
+        height: 100%;
+        background: var(--accent);
+      }
+      .scroll {
+        max-height: 420px;
+        overflow: auto;
+      }
+      .tabs {
+        display: flex;
+        gap: 0.3rem;
+        margin: 0 0 1rem;
+        border-bottom: 1px solid var(--line);
+        flex-wrap: wrap;
+      }
+      .tabs button {
+        border: 0;
+        border-bottom: 3px solid transparent;
+        border-radius: 0;
+        background: none;
+        padding: 0.5rem 0.8rem;
+        color: var(--soft);
+      }
+      .tabs button[aria-selected="true"] {
+        color: var(--ink);
+        border-bottom-color: var(--accent);
+        font-weight: 600;
+      }
+      #login {
+        max-width: 380px;
+        margin: 20vh auto;
+      }
+      .msg {
+        min-height: 1.3rem;
+        color: var(--soft);
+        font-size: 0.85rem;
+        margin: 0.4rem 0 0;
+      }
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div id="login" class="card" hidden>
+        <h1>Election admin</h1>
+        <form class="row" id="loginForm">
+          <input
+            id="key"
+            type="password"
+            placeholder="Admin key"
+            autocomplete="off"
+            required
+          /><button class="primary">Open</button>
+        </form>
+        <p class="msg bad" id="loginMsg"></p>
+      </div>
+
+      <div id="app" hidden>
+        <h1>Election</h1>
+        <div class="tabs" role="tablist" id="tabs">
+          <button role="tab" data-tab="overview" aria-selected="true">
+            Overview
+          </button>
+          <button role="tab" data-tab="register" aria-selected="false">
+            Voter register
+          </button>
+          <button role="tab" data-tab="candidates" aria-selected="false">
+            Candidates
+          </button>
+          <button role="tab" data-tab="sms" aria-selected="false">
+            SMS outbox
+          </button>
+        </div>
+
+        <section id="t-overview">
+          <div class="grid">
+            <div class="card stat">
+              <b id="sCast">-</b><span>Ballots cast</span>
+            </div>
+            <div class="card stat">
+              <b id="sIds">-</b><span>IDs used / eligible voters</span>
+            </div>
+            <div class="card stat">
+              <b id="sFees">-</b><span id="sFeesLbl">Fees recorded</span>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Results</h2>
+            <div id="results"></div>
+          </div>
+        </section>
+
+        <section id="t-register" hidden>
+          <div class="card">
+            <h2>Add a voter</h2>
+            <p class="sub" id="feeNote"></p>
+            <form class="row" id="addVoter">
+              <input
+                id="vName"
+                placeholder="Name"
+                required
+                style="width: 200px"
+              />
+              <input
+                id="vPhone"
+                placeholder="Phone e.g. 024 123 4567"
+                required
+                style="width: 200px"
+                inputmode="tel"
+              />
+              <input
+                id="vAmount"
+                type="number"
+                min="0"
+                placeholder="Paid (GH₵)"
+                required
+                style="width: 130px"
+              />
+              <button class="primary">Add</button>
+            </form>
+            <details style="margin-top: 0.8rem">
+              <summary>
+                Bulk add (paste or upload: <code>name, phone, amount</code> or
+                Excel/CSV)
+              </summary>
+              <textarea
+                id="bulk"
+                placeholder="Ama Mensah, 0241234567, 50&#10;Kofi Boateng, 0551234567, 100"
+              ></textarea>
+              <div
+                class="row"
+                style="margin-top: 0.7rem; align-items: flex-end"
+              >
+                <label class="row" style="gap: 0.5rem; align-items: center">
+                  <span>Excel/CSV</span>
+                  <input id="bulkFile" type="file" accept=".csv,.xls,.xlsx" />
+                </label>
+                <button id="bulkGo">Import</button>
+                <button id="bulkFileGo" type="button">Upload sheet</button>
+              </div>
+            </details>
+            <p class="msg" id="regMsg"></p>
+          </div>
+          <div class="card">
+            <h2>Register</h2>
+            <p class="sub">
+              An ID is issued once at least the registration fee is paid. The
+              voter logs in with the ID <b>and</b> the phone number, then gets
+              an OTP. The ID is used up when the OTP is accepted.
+            </p>
+            <div class="row" style="margin-bottom: 0.5rem">
+              <button id="copyIds">Copy "ID, phone" for unused IDs</button>
+            </div>
+            <div class="scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Paid</th>
+                    <th>ID</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="voterRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="t-candidates" hidden>
+          <div class="card">
+            <h2>Add a candidate</h2>
+            <p class="sub" id="contestNote"></p>
+            <form class="row" id="addCand">
+              <select id="cPortfolio" required></select>
+              <input
+                id="cName"
+                placeholder="Candidate name"
+                required
+                style="width: 220px"
+              />
+              <input
+                id="cAmount"
+                type="number"
+                min="0"
+                placeholder="Paid (GH₵)"
+                required
+                style="width: 130px"
+              />
+              <button class="primary">Add</button>
+            </form>
+            <p class="msg" id="candMsg">
+              Candidates can be added or removed only until the first vote is
+              cast.
+            </p>
+          </div>
+          <div class="card" id="portfolios"></div>
+        </section>
+
+        <section id="t-sms" hidden>
+          <div class="card">
+            <h2>SMS outbox</h2>
+            <p class="sub" id="smsNote"></p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>To</th>
+                  <th>Message</th>
+                </tr>
+              </thead>
+              <tbody id="smsRows"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script>
+      const $ = (id) => document.getElementById(id);
+      let KEY = "";
+      try {
+        KEY = sessionStorage.getItem("adminKey") || "";
+      } catch {}
+      async function call(method, path, body) {
+        const r = await fetch("/api/admin" + path, {
+          method,
+          headers: { "x-admin-key": KEY, "Content-Type": "application/json" },
+          body: body ? JSON.stringify(body) : undefined,
+        });
+        if (r.status === 401) {
+          showLogin("Wrong key.");
+          throw new Error("auth");
+        }
+        const data = await r.json();
+        if (!r.ok) {
+          const e = new Error(data.code);
+          e.data = data;
+          throw e;
+        }
+        return data;
+      }
+      function showLogin(msg = "") {
+        $("app").hidden = true;
+        $("login").hidden = false;
+        $("loginMsg").textContent = msg;
+        clearInterval(timer);
+      }
+      const esc = (s) =>
+        String(s ?? "").replace(
+          /[&<>"]/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+        );
+      const cedis = (n) => "GH₵" + Number(n).toLocaleString();
+      const ERR = {
+        PHONE_EXISTS: "phone already on the register",
+        INVALID_PHONE: "not a valid phone number",
+        FEE_TOO_LOW: "fee too low",
+        VOTING_STARTED: "voting has started; the ballot is frozen",
+        NO_CANDIDATES: "add candidates before opening voting",
+        NOT_PAID: "fee not paid yet",
+      };
+      const say = (id, text, bad) => {
+        $(id).textContent = text;
+        $(id).className = "msg " + (bad ? "bad" : "");
+      };
+      function parseBulkRows(rawText) {
+        return rawText
+          .split(/\r?\n|,/)
+          .map((cell) => String(cell).trim())
+          .filter(Boolean);
+      }
+      function rowsFromWorkbook(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            try {
+              const workbook = XLSX.read(event.target.result, {
+                type: "array",
+              });
+              const sheet = workbook.Sheets[workbook.SheetNames[0]];
+              const rows = XLSX.utils.sheet_to_json(sheet, {
+                header: 1,
+                raw: false,
+                defval: "",
+              });
+              const parsed = rows
+                .map((row) => {
+                  const values = (row || []).map((value) =>
+                    String(value ?? "").trim(),
+                  );
+                  if (!values.length || values.every((value) => !value))
+                    return null;
+                  if (
+                    values.some((value) => /^(name|phone|amount)$/i.test(value))
+                  )
+                    return null;
+                  const name = values[0] || "";
+                  const phone = values[1] || "";
+                  const amount = values[2] || "";
+                  if (!name || !phone || !amount) return null;
+                  return { name, phone, amount: Number(amount) };
+                })
+                .filter(Boolean);
+              resolve(parsed.length ? parsed : []);
+            } catch (error) {
+              reject(error);
+            }
+          };
+          reader.onerror = () =>
+            reject(new Error("Could not read the uploaded file."));
+          reader.readAsArrayBuffer(file);
+        });
+      }
+
+      let timer,
+        tab = "overview",
+        fees = { registration: 50, contest: 200 };
+
+      async function refresh() {
+        const s = await call("GET", "/summary");
+        $("login").hidden = true;
+        $("app").hidden = false;
+        fees = s.fees;
+        $("sCast").textContent = s.ballotsCast;
+        $("sIds").textContent =
+          `${s.register.idsUsed} / ${s.register.eligible}`;
+        $("sFees").textContent = cedis(s.collected.total);
+        $("sFeesLbl").textContent =
+          `Fees recorded (voters ${cedis(s.collected.voters)} + candidates ${cedis(s.collected.candidates)})`;
+        $("results").innerHTML =
+          s.results
+            .map((p) => {
+              const max = Math.max(1, ...p.candidates.map((x) => x.votes));
+              return `<h3>${esc(p.title)}</h3><table>${p.candidates.map((x) => `<tr><td style="width:38%">${esc(x.name)}</td><td><div class="bar"><i style="width:${(x.votes / max) * 100}%"></i></div></td><td style="width:50px;text-align:right"><b>${x.votes}</b></td></tr>`).join("")}</table>`;
+            })
+            .join("") || "<p class='sub'>No candidates yet.</p>";
+        $("feeNote").textContent =
+          `Registration fee: ${cedis(fees.registration)} minimum. An ID is issued automatically once it is paid.`;
+        $("contestNote").textContent =
+          `Contesting fee: ${cedis(fees.contest)}. Candidates appear on the ballot once added.`;
+        if (tab === "register") await loadVoters();
+        if (tab === "candidates") await loadCandidates();
+        if (tab === "sms") await loadSms();
+      }
+
+      async function loadVoters() {
+        const { voters } = await call("GET", "/voters");
+        window.__voters = voters;
+        $("voterRows").innerHTML = voters
+          .map((v) => {
+            const status = !v.code
+              ? '<span class="pill bad">unpaid</span>'
+              : v.used
+                ? '<span class="pill">ID used</span>'
+                : '<span class="pill ok">ID ready</span>';
+            const act = !v.code
+              ? `<button class="sm" data-pay="${v.id}">Record payment</button>`
+              : v.used
+                ? `<button class="sm" data-reissue="${v.id}">Void &amp; reissue</button>`
+                : "";
+            return `<tr><td>${v.id}</td><td>${esc(v.name)}</td><td>${esc(v.phone)}</td><td>${cedis(v.paid)}</td><td>${v.code ? `<code>${esc(v.code)}</code>` : "-"}</td><td>${status}</td><td>${act}</td></tr>`;
+          })
+          .join("");
+      }
+      async function importBulkRows(rows) {
+        const voters = rows
+          .map((row) => ({
+            name: String(row.name || "").trim(),
+            phone: String(row.phone || "").trim(),
+            amount: Number(row.amount || 0),
+          }))
+          .filter(
+            (row) => row.name && row.phone && Number.isFinite(row.amount),
+          );
+        if (!voters.length) {
+          return say(
+            "regMsg",
+            "Nothing to import. Use name, phone, amount or upload a spreadsheet.",
+            true,
+          );
+        }
+        const r = await call("POST", "/voters", { voters });
+        const bad = r.results
+          .filter((x) => x.error)
+          .map((x) => `row ${x.row}: ${ERR[x.error] || x.error}`);
+        say(
+          "regMsg",
+          `Imported ${r.created} of ${voters.length}.` +
+            (bad.length ? " Skipped: " + bad.join("; ") : ""),
+          bad.length > 0,
+        );
+        if (!bad.length) {
+          $("bulk").value = "";
+          $("bulkFile").value = "";
+        }
+        refresh();
+      }
+      async function loadCandidates() {
+        const { portfolios } = await call("GET", "/portfolios");
+        const sel = $("cPortfolio"),
+          keep = sel.value;
+        sel.innerHTML = portfolios
+          .map((p) => `<option value="${p.id}">${esc(p.title)}</option>`)
+          .join("");
+        if (keep) sel.value = keep;
+        $("portfolios").innerHTML = portfolios
+          .map(
+            (p) =>
+              `<h3>${esc(p.title)} <small class="sub">(${p.candidates.length})</small></h3>` +
+              (p.candidates.length
+                ? `<table>${p.candidates.map((c) => `<tr><td>${esc(c.name)}</td><td style="width:110px">${cedis(c.paid)}</td><td style="width:90px"><button class="sm danger" data-delcand="${c.id}">Remove</button></td></tr>`).join("")}</table>`
+                : '<p class="sub">No candidates: this portfolio is left off the ballot.</p>'),
+          )
+          .join("");
+      }
+      async function loadSms() {
+        const r = await call("GET", "/outbox");
+        $("smsNote").textContent =
+          r.provider === "console"
+            ? "Demo mode: no real SMS is sent. Messages appear here (and the OTP is shown on the voter's screen)."
+            : `Real SMS provider in use: ${r.provider}. Messages are not kept here.`;
+        $("smsRows").innerHTML =
+          r.messages
+            .map(
+              (m) =>
+                `<tr><td>${new Date(m.at).toLocaleTimeString()}</td><td>${esc(m.phone)}</td><td>${esc(m.text)}</td></tr>`,
+            )
+            .join("") ||
+          '<tr><td colspan="3" class="sub">Nothing sent yet.</td></tr>';
+      }
+
+      function start() {
+        refresh()
+          .then(() => {
+            clearInterval(timer);
+            timer = setInterval(() => refresh().catch(() => {}), 3000);
+          })
+          .catch(() => {});
+      }
+      $("loginForm").onsubmit = (e) => {
+        e.preventDefault();
+        KEY = $("key").value;
+        try {
+          sessionStorage.setItem("adminKey", KEY);
+        } catch {}
+        start();
+      };
+      $("tabs").onclick = (e) => {
+        const b = e.target.closest("[data-tab]");
+        if (!b) return;
+        tab = b.dataset.tab;
+        for (const x of document.querySelectorAll("[data-tab]")) {
+          x.setAttribute("aria-selected", x === b);
+          $("t-" + x.dataset.tab).hidden = x !== b;
+        }
+        refresh().catch(() => {});
+      };
+      $("addVoter").onsubmit = async (e) => {
+        e.preventDefault();
+        try {
+          const r = await call("POST", "/voters", {
+            voters: [
+              {
+                name: $("vName").value,
+                phone: $("vPhone").value,
+                amount: +$("vAmount").value,
+              },
+            ],
+          });
+          const x = r.results[0];
+          if (x.error)
+            say("regMsg", `Not added: ${ERR[x.error] || x.error}`, true);
+          else {
+            say(
+              "regMsg",
+              x.code
+                ? `Added. ID: ${x.code}`
+                : `Added, but no ID yet: ${cedis(fees.registration)} not reached.`,
+            );
+            $("addVoter").reset();
+          }
+        } catch (err) {
+          say("regMsg", err.message, true);
+        }
+        refresh();
+      };
+      $("bulkGo").onclick = async () => {
+        const raw = $("bulk").value.trim();
+        if (!raw) {
+          return say(
+            "regMsg",
+            "Nothing to import. Use: name, phone, amount",
+            true,
+          );
+        }
+        const lines = raw
+          .split(/\r?\n/)
+          .map((line) => line.split(",").map((cell) => cell.trim()))
+          .filter((items) => items.some(Boolean));
+        const voters = lines
+          .map((items) => ({
+            name: items[0] || "",
+            phone: items[1] || "",
+            amount: Number(items[2] || 0),
+          }))
+          .filter(
+            (item) => item.name && item.phone && Number.isFinite(item.amount),
+          );
+        if (!voters.length) {
+          return say(
+            "regMsg",
+            "Nothing to import. Use: name, phone, amount",
+            true,
+          );
+        }
+        importBulkRows(voters);
+      };
+      $("bulkFileGo").onclick = async () => {
+        const file = $("bulkFile").files?.[0];
+        if (!file) {
+          return say("regMsg", "Choose an Excel or CSV file first.", true);
+        }
+        try {
+          const rows = await rowsFromWorkbook(file);
+          await importBulkRows(rows);
+        } catch (error) {
+          say(
+            "regMsg",
+            error.message || "Could not load the spreadsheet.",
+            true,
+          );
+        }
+      };
+      $("voterRows").onclick = async (e) => {
+        const pay = e.target.closest("[data-pay]"),
+          re = e.target.closest("[data-reissue]");
+        try {
+          if (pay) {
+            const a = prompt(
+              `Amount paid now (GH₵). The ID is issued once the total reaches ${fees.registration}.`,
+              String(fees.registration),
+            );
+            if (!a) return;
+            const r = await call("POST", `/voters/${pay.dataset.pay}/payment`, {
+              amount: +a,
+            });
+            say(
+              "regMsg",
+              r.code
+                ? `Paid. ID issued: ${r.code}`
+                : `Recorded. Total ${cedis(r.paid)}: still under ${cedis(fees.registration)}.`,
+            );
+          }
+          if (re) {
+            if (
+              !confirm(
+                "Void this voter's ID and issue a new one? Only do this if they did not finish voting.",
+              )
+            )
+              return;
+            const r = await call(
+              "POST",
+              `/voters/${re.dataset.reissue}/reissue`,
+            );
+            say("regMsg", `New ID issued: ${r.code}`);
+          }
+        } catch (err) {
+          say("regMsg", ERR[err.message] || err.message, true);
+        }
+        refresh();
+      };
+      $("copyIds").onclick = async () => {
+        const t = (window.__voters || [])
+          .filter((v) => v.code && !v.used)
+          .map((v) => `${v.code}, ${v.phone}`)
+          .join("\n");
+        try {
+          await navigator.clipboard.writeText(t);
+          say("regMsg", "Copied.");
+        } catch {
+          say(
+            "regMsg",
+            "Copy blocked by the browser; select from the table.",
+            true,
+          );
+        }
+      };
+      $("addCand").onsubmit = async (e) => {
+        e.preventDefault();
+        try {
+          await call("POST", "/candidates", {
+            portfolioId: +$("cPortfolio").value,
+            name: $("cName").value,
+            amount: +$("cAmount").value,
+          });
+          say("candMsg", "Candidate added.");
+          $("cName").value = "";
+        } catch (err) {
+          say(
+            "candMsg",
+            err.data?.code === "FEE_TOO_LOW"
+              ? `Contesting fee is ${cedis(err.data.details.required)}.`
+              : ERR[err.message] || err.message,
+            true,
+          );
+        }
+        refresh();
+      };
+      $("portfolios").onclick = async (e) => {
+        const b = e.target.closest("[data-delcand]");
+        if (!b || !confirm("Remove this candidate?")) return;
+        try {
+          await call("DELETE", `/candidates/${b.dataset.delcand}`);
+        } catch (err) {
+          say("candMsg", ERR[err.message] || err.message, true);
+        }
+        refresh();
+      };
+      KEY ? start() : showLogin();
+    </script>
+  </body>
+</html>

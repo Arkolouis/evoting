@@ -1,0 +1,221 @@
+/* Mobile-first: the base styles are the focused ~420px voting experience. */
+
+/* Small phones: keep the header compact */
+@media (max-width: 639px) {
+  .site-header_row {
+    display: none;
+  }
+
+  .site-header_title {
+    white-space: normal;
+    font-size: 0.9375rem;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .site-header_row:has(.badge:not([hidden])) {
+    margin-bottom: 0.125rem;
+  }
+
+  .step-actions {
+    grid-template-columns: auto 1fr;
+  }
+
+  .step-actions .btn:last-child {
+    width: 100%;
+  }
+}
+
+/* Very narrow phones: stack the step buttons, primary action first */
+@media (max-width: 479px) {
+  .step-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .step-actions_spacer {
+    display: none;
+  }
+
+  .step-actions_next {
+    order: 1;
+  }
+
+  .step-actions_hint {
+    order: 2;
+  }
+
+  .step-actions_back {
+    order: 3;
+    width: 100%;
+  }
+}
+
+/* The voter badge only appears once the header has room for it; before that it
+   squeezes the election title down to "Annual Student…". */
+@media (max-width: 899px) {
+  .voter-badge {
+    display: none !important;
+  }
+
+  /* Let the title use two lines rather than being cut off with an ellipsis */
+  .site-header_title {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 479px) {
+  .demo-tools_toggle span {
+    display: none;
+  }
+}
+
+/* Large phones / small tablets */
+@media (min-width: 640px) {
+  .site-header_titles {
+    padding-left: var(--space-3);
+    border-left: 1px solid var(--color-border);
+  }
+
+  .site-footer_inner {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .card {
+    padding: var(--space-8);
+  }
+
+  .site-header_title {
+    font-size: 1.25rem;
+  }
+
+  .screen-title {
+    font-size: 2.125rem;
+  }
+
+  .position-title {
+    font-size: 1.875rem;
+  }
+
+  .status-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .status-actions .btn {
+    white-space: nowrap;
+  }
+
+  .receipt_grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .step-actions {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .step-actions_hint {
+    grid-column: auto;
+    order: 0;
+    padding-inline: var(--space-3);
+  }
+
+  .review-footer {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+}
+
+/* Phones and small tablets: one card per row (avoids a lone third card) */
+@media (max-width: 759px) {
+  .candidate-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tablet: the ballot card widens and candidates sit side by side */
+@media (min-width: 760px) {
+  .ballot-main {
+    max-width: 60rem;
+  }
+
+  .card--review {
+    max-width: 44rem;
+  }
+}
+
+/* Laptop / desktop: sidebar index appears next to the focused ballot card */
+@media (min-width: 1100px) {
+  .ballot-layout {
+    grid-template-columns: clamp(17rem, 23vw, 20rem) minmax(0, 1fr);
+    gap: clamp(var(--space-6), 3vw, var(--space-10));
+  }
+
+  .sidebar {
+    display: block;
+  }
+
+  .ballot-main {
+    max-width: none;
+    margin-inline: 0;
+  }
+}
+
+/* Very small phones (<= 360px): tighten spacing so nothing is cut off */
+@media (max-width: 360px) {
+  :root {
+    --gutter: 0.75rem;
+  }
+
+  .card {
+    padding: var(--space-4);
+  }
+
+  .candidate {
+    padding: var(--space-3);
+  }
+}
+
+/* Short landscape phones: a sticky header would eat a third of the screen */
+@media (max-height: 480px) and (orientation: landscape) {
+  .site-header {
+    position: static;
+  }
+
+  .sidebar_card {
+    position: static;
+  }
+}
+
+/* Very large monitors: keep content centred and readable */
+@media (min-width: 1600px) {
+  :root {
+    --container-max: 84rem; /* header, content and footer widen together */
+  }
+}
+
+@media print {
+  .site-header,
+  .site-footer,
+  .status-actions,
+  .demo-tools,
+  .skip-link {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .card {
+    box-shadow: none;
+    border-color: #999;
+  }
+}

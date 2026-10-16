@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Student Union Election portal (frontend with a mock API)."
+    />
+    <meta name="color-scheme" content="light dark" />
+    <title>Student Union Election · Election Portal</title>
+
+    <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Public+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./css/variables.css" />
+    <link rel="stylesheet" href="./css/reset.css" />
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/layout.css" />
+    <link rel="stylesheet" href="./css/components.css" />
+    <link rel="stylesheet" href="./css/ballot.css" />
+    <link rel="stylesheet" href="./css/responsive.css" />
+
+    <!-- Applies the saved theme before first paint (prevents a flash). -->
+    <script src="./js/theme-init.js"></script>
+    <script type="module" src="./js/app.js"></script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#app">Skip to main content</a>
+
+    <header class="site-header">
+      <div class="site-header_brand">
+        <img
+          class="brand-mark"
+          src="./assets/icons/favicon.svg"
+          alt=""
+          aria-hidden="true"
+        />
+        <div class="site-header_titles">
+          <div class="site-header_row">
+            <span class="site-header_eyebrow">Election Portal</span>
+          </div>
+          <h1 class="site-header_title" id="electionTitle">
+            Student Union Election
+          </h1>
+        </div>
+      </div>
+
+      <div class="site-header_tools">
+        <div class="voter-badge" id="voterBadge" hidden>
+          <span class="voter-badge_label">Voter:</span>
+          <span class="voter-badge_value" id="voterBadgeValue"></span>
+        </div>
+
+        <div class="demo-tools" id="demoTools" hidden></div>
+      </div>
+    </header>
+
+    <main class="app" id="app" aria-busy="true"></main>
+
+    <footer class="site-footer">
+      <div class="site-footer_inner">
+        <div class="site-footer_status">
+          <span class="badge_dot badge_dot--static" aria-hidden="true"></span>
+          <span>Student Electoral Commission</span>
+        </div>
+        <nav class="site-footer_links" aria-label="Election information">
+          <button
+            type="button"
+            class="link-btn"
+            data-action="show-info"
+            data-info="regulations"
+          >
+            Electoral Regulations
+          </button>
+          <button
+            type="button"
+            class="link-btn"
+            data-action="show-info"
+            data-info="audit"
+          >
+            Auditing Standards
+          </button>
+          <button
+            type="button"
+            class="link-btn"
+            data-action="show-info"
+            data-info="help"
+          >
+            Helpdesk
+          </button>
+        </nav>
+      </div>
+    </footer>
+
+    <!-- Polite announcements for screen readers -->
+    <div
+      class="sr-only"
+      id="liveRegion"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+
+    <dialog class="dialog" id="infoDialog" aria-labelledby="infoDialogTitle">
+      <h2 class="dialog_title" id="infoDialogTitle"></h2>
+      <p class="dialog_body" id="infoDialogBody"></p>
+      <button type="button" class="btn btn--primary" data-action="close-info">
+        Close
+      </button>
+    </dialog>
+
+    <noscript>
+      <p class="noscript">This ballot portal needs JavaScript to run.</p>
+    </noscript>
+  </body>
+</html>
